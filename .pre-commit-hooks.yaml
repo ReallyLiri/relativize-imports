@@ -1,7 +1,7 @@
--   id: absolufy-imports
-    name: absolufy-imports
+-   id: relativize-imports
+    name: relativize-imports
     description: Automatically convert relative imports to absolute
-    entry: absolufy-imports
+    entry: relativize-imports
     language: python
     types: [python]
     # for backward compatibility
