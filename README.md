@@ -39,6 +39,7 @@ $ relativize-imports mypackage/myfile.py
 ## Build and Publish
 
 ```shell
+rm -rf dist
 python setup.py bdist_wheel 
 twine upload dist/*
 ```
