@@ -99,7 +99,7 @@ def main(argv: Optional[Sequence[str]] = None):
     root = os.getcwd()
 
     file_paths = args.files
-    if not file_paths:
+    if not file_paths or file_paths == '.':
         file_paths = glob.glob("**/*.py", recursive=True)
     changed_count = 0
     for file_path in file_paths:

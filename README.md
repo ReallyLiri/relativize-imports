@@ -35,3 +35,10 @@ $ relativize-imports mypackage/myfile.py
 - from mypackage import __version__
 + from . import __version__
 ```
+
+## Build and Publish
+
+```shell
+python setup.py bdist_wheel 
+twine upload dist/*
+```
