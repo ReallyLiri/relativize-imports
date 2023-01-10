@@ -98,14 +98,18 @@ def main(argv: Optional[Sequence[str]] = None):
 
     root = os.getcwd()
 
-    file_paths = args.files
-    if not file_paths or file_paths == '.':
-        file_paths = glob.glob("**/*.py", recursive=True)
+    file_paths = args.files or ["."]
     changed_count = 0
-    for file_path in file_paths:
-        changed = relativize_imports(file_path, root)
-        if changed:
-            changed_count += 1
+    for path in file_paths:
+        if path.endswith(".py"):
+            file_paths = [path]
+        else:
+            file_paths = glob.glob(f"{path}/**/*.py", recursive=True)
+        for file_path in file_paths:
+            changed = relativize_imports(file_path, root)
+            if changed:
+                changed_count += 1
+
     if not changed_count:
         print("Nothing changed 👌")
     else:
