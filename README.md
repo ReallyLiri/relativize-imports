@@ -19,7 +19,7 @@ Sample `.pre-commit-config.yaml`:
 
 ```yaml
 -   repo: https://github.com/reallyliri/relativize-imports
-    rev: v0.0.2
+    rev: v0.0.4
     hooks:
     -   id: relativize-imports
 ```

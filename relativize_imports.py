@@ -25,8 +25,9 @@ def _is_python_file_or_dir(path: str) -> bool:
 
 
 class Visitor(ast.NodeVisitor):
-    def __init__(self, parts: Sequence[str]) -> None:
+    def __init__(self, parts: Sequence[str], root_path: str) -> None:
         self.parts = parts
+        self.root_path = root_path
         self.to_replace: MutableMapping[int, Tuple[str, str]] = {}
 
     def visit_ImportFrom(self, node: ast.ImportFrom) -> None:
@@ -39,7 +40,7 @@ class Visitor(ast.NodeVisitor):
 
         module_parts = node.module.split(".")
 
-        if not _is_python_file_or_dir(os.path.join(*module_parts)):
+        if not _is_python_file_or_dir(os.path.join(self.root_path, *module_parts)):
             # Can't convert to relative, might be third-party
             return
 
@@ -65,14 +66,13 @@ class Visitor(ast.NodeVisitor):
 
 
 def relativize_imports(file_path: str, root_path: str) -> bool:
-    path = Path(file_path).resolve()
-    path.relative_to(root_path)
-    relative_path = path.relative_to(root_path)
+    full_path = Path(file_path).resolve()
+    relative_path = full_path.relative_to(root_path)
 
-    content = path.read_text()
+    content = full_path.read_text()
     tree = ast.parse(content)
 
-    visitor = Visitor(relative_path.parts)
+    visitor = Visitor(relative_path.parts, root_path)
     visitor.visit(tree)
 
     if not visitor.to_replace:
@@ -101,12 +101,14 @@ def main(argv: Optional[Sequence[str]] = None):
     file_paths = args.files or ["."]
     changed_count = 0
     for path in file_paths:
+        current_root = root
         if path.endswith(".py"):
             file_paths = [path]
         else:
-            file_paths = glob.glob(f"{path}/**/*.py", recursive=True)
+            file_paths = [path for path in glob.glob(f"{path}/**/*.py", recursive=True)]
+            current_root = os.path.join(root, path)
         for file_path in file_paths:
-            changed = relativize_imports(file_path, root)
+            changed = relativize_imports(file_path, current_root)
             if changed:
                 changed_count += 1
 
