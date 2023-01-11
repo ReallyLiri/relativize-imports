@@ -102,7 +102,7 @@ def main(argv: Optional[Sequence[str]] = None):
     changed_count = 0
     for path in file_paths:
         current_root = root
-        excluded_file_paths = set()
+        excluded_file_paths = []
         if path.endswith(".py"):
             file_paths = [path]
         else:
@@ -113,7 +113,7 @@ def main(argv: Optional[Sequence[str]] = None):
                 config.read(os.path.join(path, "tox.ini"))
                 excluded_file_paths = [os.path.join(path, file_path) for file_path in config["relativize-imports"]["ignore"].split(",")]
         for file_path in file_paths:
-            if file_path in excluded_file_paths:
+            if any(file_path.startswith(excluded_path) for excluded_path in excluded_file_paths):
                 continue
             changed = relativize_imports(file_path, current_root)
             if changed:

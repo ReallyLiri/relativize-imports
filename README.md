@@ -21,7 +21,7 @@ Sample `.pre-commit-config.yaml`:
 
 ```yaml
 -   repo: https://github.com/reallyliri/relativize-imports
-    rev: v0.0.5
+    rev: v0.0.6
     hooks:
     -   id: relativize-imports
 ```
@@ -30,7 +30,7 @@ Or with args:
 
 ```yaml
 -   repo: https://github.com/reallyliri/relativize-imports
-    rev: v0.0.5
+    rev: v0.0.6
     hooks:
     -   id: relativize-imports
         args:
@@ -59,7 +59,7 @@ If you want to exclude any files from relativization (i.e entrypoints), you can 
 
 ```ini
 [relativize-imports]
-ignore = src/main.py,test/aux_main.py
+ignore = src/main.py,test
 ```
 
 ## Command-line example
