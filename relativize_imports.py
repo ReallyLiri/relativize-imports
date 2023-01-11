@@ -8,7 +8,7 @@ from typing import MutableMapping
 from typing import Optional
 from typing import Sequence
 from typing import Tuple
-
+import configparser
 
 def _find_relative_depth(parts: Sequence[str], module: str) -> int:
     depth = 0
@@ -102,12 +102,19 @@ def main(argv: Optional[Sequence[str]] = None):
     changed_count = 0
     for path in file_paths:
         current_root = root
+        excluded_file_paths = set()
         if path.endswith(".py"):
             file_paths = [path]
         else:
-            file_paths = [path for path in glob.glob(f"{path}/**/*.py", recursive=True)]
+            file_paths = [path for path in glob.glob(os.path.join(path, "**", "*.py"), recursive=True)]
             current_root = os.path.join(root, path)
+            if os.path.exists(os.path.join(path, "tox.ini")):
+                config = configparser.ConfigParser()
+                config.read(os.path.join(path, "tox.ini"))
+                excluded_file_paths = [os.path.join(path, file_path) for file_path in config["relativize-imports"]["ignore"].split(",")]
         for file_path in file_paths:
+            if file_path in excluded_file_paths:
+                continue
             changed = relativize_imports(file_path, current_root)
             if changed:
                 changed_count += 1

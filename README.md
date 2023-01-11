@@ -21,7 +21,7 @@ Sample `.pre-commit-config.yaml`:
 
 ```yaml
 -   repo: https://github.com/reallyliri/relativize-imports
-    rev: v0.0.4
+    rev: v0.0.5
     hooks:
     -   id: relativize-imports
 ```
@@ -30,7 +30,7 @@ Or with args:
 
 ```yaml
 -   repo: https://github.com/reallyliri/relativize-imports
-    rev: v0.0.4
+    rev: v0.0.5
     hooks:
     -   id: relativize-imports
         args:
@@ -49,6 +49,18 @@ Provide zero or more paths to relativize.
 Files are assumed to be relative to the cwd. Directories are assumed as relativization root and the tool will format all python files under them, in any depth.
 
 If no args are provided, the tool will run in the cwd and address it as the relativization root.
+
+
+## Config
+
+The tool will read any config set in `tox.ini` in a root directory.
+
+If you want to exclude any files from relativization (i.e entrypoints), you can add them to config:
+
+```ini
+[relativize-imports]
+ignore = src/main.py,test/aux_main.py
+```
 
 ## Command-line example
 
